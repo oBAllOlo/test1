@@ -1,3 +1,6 @@
+// .env
+
+
 PORT=5000
 MONGO_URI=mongodb+srv://sittipongj74:IHB5Kj4kYdRJeukD@cluster0.wwzzx.mongodb.net/ecommerce_db?retryWrites=true&w=majority&appName=Cluster0
 
