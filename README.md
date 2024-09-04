@@ -1,59 +1,16 @@
-<h1 align="center">E-Commerce Store 🛒</h1>
-
-![Demo App](/frontend/public/screenshot-for-readme.png)
-
-[Video Tutorial on Youtube](https://youtu.be/sX57TLIPNx8)
-
-About This Course:
-
--   🚀 Project Setup
--   🗄️ MongoDB & Redis Integration
--   💳 Stripe Payment Setup
--   🔐 Robust Authentication System
--   🔑 JWT with Refresh/Access Tokens
--   📝 User Signup & Login
--   🛒 E-Commerce Core
--   📦 Product & Category Management
--   🛍️ Shopping Cart Functionality
--   💰 Checkout with Stripe
--   🏷️ Coupon Code System
--   👑 Admin Dashboard
--   📊 Sales Analytics
--   🎨 Design with Tailwind
--   🛒 Cart & Checkout Process
--   🔒 Security
--   🛡️ Data Protection
--   🚀Caching with Redis
--   ⌛ And a lot more...
-
-### Setup .env file
-
-```bash
 PORT=5000
-MONGO_URI=your_mongo_uri
+MONGO_URI=mongodb+srv://sittipongj74:IHB5Kj4kYdRJeukD@cluster0.wwzzx.mongodb.net/ecommerce_db?retryWrites=true&w=majority&appName=Cluster0
 
-UPSTASH_REDIS_URL=your_redis_url
+UPSTASH_REDIS_URL="rediss://default:AcQ1AAIjcDFhYzg1NWY4YWEzYzE0YmE0OTNmMzhmMjgyMWYzYmUxZXAxMA@inviting-crawdad-50229.upstash.io:6379"
 
-ACCESS_TOKEN_SECRET=your_access_token_secret
-REFRESH_TOKEN_SECRET=your_refresh_token_secret
+ACCESS_TOKEN_SECRET=access_token_secret
+REFRESH_TOKEN_SECRET=refresh_token_secret
 
-CLOUDINARY_CLOUD_NAME=your_cloud_name
-CLOUDINARY_API_KEY=your_api_key
-CLOUDINARY_API_SECRET=your_api_secret
+CLOUDINARY*CLOUD_NAME=dea7e29r0
+CLOUDINARY_API_KEY=693777864819335
+CLOUDINARY_API_SECRET=iu30pfusbdtrIFqhCJRy0k*-5a8
 
-STRIPE_SECRET_KEY=your_stripe_secret_key
+STRIPE_SECRET_KEY=sk_test_51Puh8AP584vnMLEUkzxXBwVSDNSZaZxgLvsH0EN2TzsYKP8IFUQdVN8AAJeGSBhdjDnA1yoN6O4DSIjlZ25P9UmZ00npJ3q542
+
 CLIENT_URL=http://localhost:5173
 NODE_ENV=development
-```
-
-### Run this app locally
-
-```shell
-npm run build
-```
-
-### Start the app
-
-```shell
-npm run start
-```
