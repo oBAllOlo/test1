@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { MoveRight } from "lucide-react";
 import { loadStripe } from "@stripe/stripe-js";
 import axios from "../lib/axios";
+import { formatToThaiBaht } from "../lib/utils.js"; // นำเข้าฟังก์ชัน
 
 const stripePromise = loadStripe(
   "pk_test_51Puh8AP584vnMLEUI9fmp84DnnGDw4Mmoqgwt6HOUjyRcU2fJc539Q03vSld2MCsg1oivhbFR7yqEdaFsnhh9cZQ00m1X1TcLl"
@@ -13,9 +14,6 @@ const OrderSummary = () => {
   const { total, subtotal, coupon, isCouponApplied, cart } = useCartStore();
 
   const savings = subtotal - total;
-  const formattedSubtotal = subtotal.toFixed(2);
-  const formattedTotal = total.toFixed(2);
-  const formattedSavings = savings.toFixed(2);
 
   const handlePayment = async () => {
     const stripe = await stripePromise;
@@ -50,7 +48,7 @@ const OrderSummary = () => {
               Original price
             </dt>
             <dd className="text-base font-medium text-white">
-              ${formattedSubtotal}
+              {formatToThaiBaht(subtotal)}
             </dd>
           </dl>
 
@@ -58,7 +56,7 @@ const OrderSummary = () => {
             <dl className="flex items-center justify-between gap-4">
               <dt className="text-base font-normal text-gray-300">Savings</dt>
               <dd className="text-base font-medium text-emerald-400">
-                -${formattedSavings}
+                -{formatToThaiBaht(savings)}
               </dd>
             </dl>
           )}
@@ -76,7 +74,7 @@ const OrderSummary = () => {
           <dl className="flex items-center justify-between gap-4 border-t border-gray-600 pt-2">
             <dt className="text-base font-bold text-white">Total</dt>
             <dd className="text-base font-bold text-emerald-400">
-              ${formattedTotal}
+              {formatToThaiBaht(total)}
             </dd>
           </dl>
         </div>

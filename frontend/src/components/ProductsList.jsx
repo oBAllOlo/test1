@@ -3,6 +3,7 @@ import { Trash, Star, Edit } from "lucide-react";
 import { useProductStore } from "../stores/useProductStore";
 import { useState } from "react";
 import { categories } from "../components/categoriesname";
+import { formatToThaiBaht } from "../lib/utils"; // นำเข้าฟังก์ชันที่ใช้ในการฟอร์แมตราคา
 
 const ProductsList = () => {
   const { deleteProduct, toggleFeaturedProduct, updateProduct, products } =
@@ -50,7 +51,7 @@ const ProductsList = () => {
     try {
       setLoadingProductId(productId);
       await updateProduct(productId, editedProduct);
-      setEditingProductId(null); // Exit editing mode after save
+      setEditingProductId(null); // ออกจากโหมดแก้ไขหลังจากบันทึกเสร็จ
     } catch (error) {
       console.error("Error saving product:", error);
     } finally {
@@ -118,7 +119,7 @@ const ProductsList = () => {
                     />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    {/* Use select for category selection */}
+                    {/* ใช้ select เพื่อเลือกหมวดหมู่ */}
                     <select
                       className="text-sm text-gray-900 p-2 rounded"
                       value={editedProduct.category}
@@ -192,7 +193,7 @@ const ProductsList = () => {
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <div className="text-sm text-gray-300">
-                      ${product.price.toFixed(2)}
+                      {formatToThaiBaht(product.price)}
                     </div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
