@@ -2,17 +2,7 @@ import { motion } from "framer-motion";
 import { Trash, Star, Edit } from "lucide-react";
 import { useProductStore } from "../stores/useProductStore";
 import { useState } from "react";
-
-// Define categories
-const categories = [
-  "jeans",
-  "t-shirts",
-  "shoes",
-  "glasses",
-  "jackets",
-  "suits",
-  "bags",
-];
+import { categories } from "../components/categoriesname";
 
 const ProductsList = () => {
   const { deleteProduct, toggleFeaturedProduct, updateProduct, products } =
