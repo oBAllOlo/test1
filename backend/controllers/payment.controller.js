@@ -15,13 +15,12 @@ export const createCheckoutSession = async (req, res) => {
     let totalAmount = 0;
 
     const lineItems = products.map((product) => {
-      // Stripe ต้องการให้ราคาสินค้าในรูปแบบสตางค์
-      const amount = Math.round(product.price * 100); // ราคาเป็นสตางค์
+      const amount = Math.round(product.price * 100); // ส่งราคาในรูปแบบสตางค์
       totalAmount += amount * product.quantity;
 
       return {
         price_data: {
-          currency: "thb", // กำหนดสกุลเงินเป็น THB
+          currency: "thb", // ใช้สกุลเงินไทยบาท
           product_data: {
             name: product.name,
             images: [product.image],
@@ -59,7 +58,9 @@ export const createCheckoutSession = async (req, res) => {
             },
           ]
         : [],
-      currency: "thb", // กำหนดสกุลเงินเป็น THB สำหรับ session นี้
+      shipping_address_collection: {
+        allowed_countries: ["TH", "US", "CA"], // กำหนดประเทศที่ยอมรับที่อยู่การจัดส่ง
+      },
       metadata: {
         userId: req.user._id.toString(),
         couponCode: couponCode || "",
