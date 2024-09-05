@@ -2,6 +2,8 @@ import Coupon from "../models/coupon.model.js";
 import Order from "../models/order.model.js";
 import { stripe } from "../lib/stripe.js";
 
+const USD_TO_THAI_CONVERSION_RATE = 34; // อัตราแลกเปลี่ยนสมมติเป็น 34 บาทต่อ 1 ดอลลาร์
+
 export const createCheckoutSession = async (req, res) => {
   try {
     const { products, couponCode } = req.body;
@@ -13,12 +15,13 @@ export const createCheckoutSession = async (req, res) => {
     let totalAmount = 0;
 
     const lineItems = products.map((product) => {
-      const amount = Math.round(product.price * 100); // stripe wants u to send in the format of cents
+      // Stripe ต้องการให้ราคาสินค้าในรูปแบบสตางค์
+      const amount = Math.round(product.price * 100); // ราคาเป็นสตางค์
       totalAmount += amount * product.quantity;
 
       return {
         price_data: {
-          currency: "usd",
+          currency: "thb", // กำหนดสกุลเงินเป็น THB
           product_data: {
             name: product.name,
             images: [product.image],
@@ -56,6 +59,7 @@ export const createCheckoutSession = async (req, res) => {
             },
           ]
         : [],
+      currency: "thb", // กำหนดสกุลเงินเป็น THB สำหรับ session นี้
       metadata: {
         userId: req.user._id.toString(),
         couponCode: couponCode || "",
@@ -69,9 +73,6 @@ export const createCheckoutSession = async (req, res) => {
       },
     });
 
-    if (totalAmount >= 20000) {
-      await createNewCoupon(req.user._id);
-    }
     res.status(200).json({ id: session.id, totalAmount: totalAmount / 100 });
   } catch (error) {
     console.error("Error processing checkout:", error);
@@ -99,16 +100,15 @@ export const checkoutSuccess = async (req, res) => {
         );
       }
 
-      // create a new Order
       const products = JSON.parse(session.metadata.products);
       const newOrder = new Order({
         user: session.metadata.userId,
         products: products.map((product) => ({
           product: product.id,
           quantity: product.quantity,
-          price: product.price,
+          price: product.price * USD_TO_THAI_CONVERSION_RATE, // แปลงเป็นสกุลเงินบาท
         })),
-        totalAmount: session.amount_total / 100, // convert from cents to dollars,
+        totalAmount: session.amount_total / 100, // แปลงจากสตางค์เป็นบาท
         stripeSessionId: sessionId,
       });
 
@@ -145,7 +145,7 @@ async function createNewCoupon(userId) {
   const newCoupon = new Coupon({
     code: "GIFT" + Math.random().toString(36).substring(2, 8).toUpperCase(),
     discountPercentage: 10,
-    expirationDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 days from now
+    expirationDate: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000), // 30 วันนับจากนี้
     userId: userId,
   });
 
