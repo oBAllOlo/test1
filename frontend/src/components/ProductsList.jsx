@@ -3,6 +3,17 @@ import { Trash, Star, Edit } from "lucide-react";
 import { useProductStore } from "../stores/useProductStore";
 import { useState } from "react";
 
+// Define categories
+const categories = [
+  "jeans",
+  "t-shirts",
+  "shoes",
+  "glasses",
+  "jackets",
+  "suits",
+  "bags",
+];
+
 const ProductsList = () => {
   const { deleteProduct, toggleFeaturedProduct, updateProduct, products } =
     useProductStore();
@@ -48,9 +59,8 @@ const ProductsList = () => {
   const handleSaveProduct = async (productId) => {
     try {
       setLoadingProductId(productId);
-      console.log("Saving product:", editedProduct); // ตรวจสอบข้อมูลที่แก้ไขก่อนส่ง
       await updateProduct(productId, editedProduct);
-      setEditingProductId(null); // ยกเลิกโหมดแก้ไขหลังบันทึกเสร็จสิ้น
+      setEditingProductId(null); // Exit editing mode after save
     } catch (error) {
       console.error("Error saving product:", error);
     } finally {
@@ -118,9 +128,9 @@ const ProductsList = () => {
                     />
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <input
+                    {/* Use select for category selection */}
+                    <select
                       className="text-sm text-gray-900 p-2 rounded"
-                      type="text"
                       value={editedProduct.category}
                       onChange={(e) =>
                         setEditedProduct({
@@ -128,7 +138,14 @@ const ProductsList = () => {
                           category: e.target.value,
                         })
                       }
-                    />
+                    >
+                      <option value="">Select Category</option>
+                      {categories.map((category) => (
+                        <option key={category} value={category}>
+                          {category}
+                        </option>
+                      ))}
+                    </select>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     <button
@@ -152,7 +169,7 @@ const ProductsList = () => {
                       Save
                     </button>
                     <button
-                      onClick={() => setEditingProductId(null)} // ยกเลิกการแก้ไข
+                      onClick={() => setEditingProductId(null)}
                       className="text-yellow-400 hover:text-yellow-300 ml-2"
                     >
                       Cancel
