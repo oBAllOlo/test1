@@ -7,7 +7,7 @@ import axios from "../lib/axios";
 import { formatToThaiBaht } from "../lib/utils.js"; // นำเข้าฟังก์ชัน
 
 const stripePromise = loadStripe(
-  "pk_test_51Puh8AP584vnMLEUI9fmp84DnnGDw4Mmoqgwt6HOUjyRcU2fJc539Q03vSld2MCsg1oivhbFR7yqEdaFsnhh9cZQ00m1X1TcLl"
+  "pk_test_51PwJSPJblUbn5Gfanij6bKbErTpWOlGRX817EXBuftMDrAv2gaGTg1O4yqQROoSkkQCZ07nUZ2W562v7G8ODkcah00SCpA3Cy9"
 );
 
 const OrderSummary = () => {
