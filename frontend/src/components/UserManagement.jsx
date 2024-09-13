@@ -11,14 +11,19 @@ const UserManagement = () => {
     email: "",
     role: "",
   });
+
+  // ฟิลด์ใหม่สำหรับการสมัครสมาชิก
   const [newUser, setNewUser] = useState({
     name: "",
     email: "",
     password: "",
+    confirmPassword: "",
     role: "customer",
   });
-  const [passwordError, setPasswordError] = useState(""); // เพิ่มสำหรับตรวจสอบรหัสผ่าน
 
+  const [passwordError, setPasswordError] = useState(""); // เก็บข้อความแจ้งเตือนเกี่ยวกับรหัสผ่าน
+
+  // โหลดข้อมูลผู้ใช้เมื่อโหลดหน้าครั้งแรก
   useEffect(() => {
     const fetchUsers = async () => {
       try {
@@ -62,16 +67,35 @@ const UserManagement = () => {
     }
   };
 
-  // ฟังก์ชันสำหรับเพิ่มผู้ใช้ใหม่
+  // ฟังก์ชันสำหรับเพิ่มผู้ใช้ใหม่โดยไม่เข้าสู่ระบบโดยอัตโนมัติ
   const handleAddUser = async () => {
     if (newUser.password.length < 6) {
       setPasswordError("Password must be at least 6 characters long");
       return;
     }
+
+    if (newUser.password !== newUser.confirmPassword) {
+      setPasswordError("Passwords do not match");
+      return;
+    }
+
     try {
-      const res = await axios.post("/users", newUser);
-      setUsers([...users, res.data]);
-      setNewUser({ name: "", email: "", password: "", role: "customer" });
+      // ส่งข้อมูลไปยัง backend เพื่อสร้างบัญชีผู้ใช้ใหม่
+      const res = await axios.post("/auth/signup", {
+        name: newUser.name,
+        email: newUser.email,
+        password: newUser.password,
+        role: newUser.role,
+      });
+
+      setUsers([...users, res.data]); // เพิ่มผู้ใช้ใหม่ในรายการ
+      setNewUser({
+        name: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+        role: "customer",
+      });
       setPasswordError(""); // รีเซ็ตข้อความแจ้งเตือน
     } catch (error) {
       console.error("Error adding user:", error);
@@ -113,6 +137,15 @@ const UserManagement = () => {
             }
             className="p-2 rounded bg-gray-700 text-white"
           />
+          <input
+            type="password"
+            placeholder="Confirm Password"
+            value={newUser.confirmPassword}
+            onChange={(e) =>
+              setNewUser({ ...newUser, confirmPassword: e.target.value })
+            }
+            className="p-2 rounded bg-gray-700 text-white"
+          />
           <select
             value={newUser.role}
             onChange={(e) => setNewUser({ ...newUser, role: e.target.value })}
@@ -132,6 +165,7 @@ const UserManagement = () => {
         {passwordError && <p className="text-red-500 mt-2">{passwordError}</p>}
       </div>
 
+      {/* แสดงตารางข้อมูลผู้ใช้ */}
       <table className="min-w-full divide-y divide-gray-700">
         <thead>
           <tr>
