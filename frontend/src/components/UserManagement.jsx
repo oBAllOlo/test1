@@ -1,10 +1,12 @@
 import { useEffect, useState } from "react";
 import axios from "../lib/axios";
-import { Trash, Edit, Save, XCircle, PlusCircle } from "lucide-react";
+import { Trash, Edit, Save, XCircle, PlusCircle, Search } from "lucide-react";
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
+  const [filteredUsers, setFilteredUsers] = useState([]); // เก็บรายการผู้ใช้ที่กรองแล้ว
   const [loading, setLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState(""); // เก็บค่าค้นหาชื่อผู้ใช้
   const [editingUserId, setEditingUserId] = useState(null);
   const [editedUser, setEditedUser] = useState({
     name: "",
@@ -12,7 +14,6 @@ const UserManagement = () => {
     role: "",
   });
 
-  // ฟิลด์ใหม่สำหรับการสมัครสมาชิก
   const [newUser, setNewUser] = useState({
     name: "",
     email: "",
@@ -23,12 +24,12 @@ const UserManagement = () => {
 
   const [passwordError, setPasswordError] = useState(""); // เก็บข้อความแจ้งเตือนเกี่ยวกับรหัสผ่าน
 
-  // โหลดข้อมูลผู้ใช้เมื่อโหลดหน้าครั้งแรก
   useEffect(() => {
     const fetchUsers = async () => {
       try {
         const res = await axios.get("/users");
         setUsers(res.data);
+        setFilteredUsers(res.data); // กำหนดค่าเริ่มต้นสำหรับผู้ใช้ที่กรองแล้ว
       } catch (error) {
         console.error("Error fetching users:", error);
       } finally {
@@ -38,6 +39,16 @@ const UserManagement = () => {
 
     fetchUsers();
   }, []);
+
+  // ฟังก์ชันค้นหาผู้ใช้ตามชื่อ
+  const handleSearch = (e) => {
+    const searchValue = e.target.value;
+    setSearchTerm(searchValue);
+    const filtered = users.filter((user) =>
+      user.name.toLowerCase().includes(searchValue.toLowerCase())
+    );
+    setFilteredUsers(filtered);
+  };
 
   const handleEditUser = (user) => {
     setEditingUserId(user._id);
@@ -67,7 +78,6 @@ const UserManagement = () => {
     }
   };
 
-  // ฟังก์ชันสำหรับเพิ่มผู้ใช้ใหม่โดยไม่เข้าสู่ระบบโดยอัตโนมัติ
   const handleAddUser = async () => {
     if (newUser.password.length < 6) {
       setPasswordError("Password must be at least 6 characters long");
@@ -80,7 +90,6 @@ const UserManagement = () => {
     }
 
     try {
-      // ส่งข้อมูลไปยัง backend เพื่อสร้างบัญชีผู้ใช้ใหม่
       const res = await axios.post("/auth/signup", {
         name: newUser.name,
         email: newUser.email,
@@ -88,7 +97,8 @@ const UserManagement = () => {
         role: newUser.role,
       });
 
-      setUsers([...users, res.data]); // เพิ่มผู้ใช้ใหม่ในรายการ
+      setUsers([...users, res.data]);
+      setFilteredUsers([...users, res.data]); // เพิ่มผู้ใช้ใหม่ในรายการกรองแล้ว
       setNewUser({
         name: "",
         email: "",
@@ -109,6 +119,22 @@ const UserManagement = () => {
       <h2 className="text-2xl font-bold text-emerald-400 mb-6">
         User Management
       </h2>
+
+      {/* ช่องค้นหาผู้ใช้ */}
+      <div className="mb-6">
+        <div className="relative">
+          <input
+            type="text"
+            placeholder="Search by name"
+            value={searchTerm}
+            onChange={handleSearch}
+            className="p-2 rounded bg-gray-700 text-white w-full"
+          />
+          <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+            <Search className="h-5 w-5 text-gray-400" />
+          </div>
+        </div>
+      </div>
 
       {/* ฟอร์มสำหรับเพิ่มผู้ใช้ใหม่ */}
       <div className="mb-6">
@@ -184,7 +210,7 @@ const UserManagement = () => {
           </tr>
         </thead>
         <tbody className="divide-y divide-gray-700">
-          {users.map((user) => (
+          {filteredUsers.map((user) => (
             <tr key={user._id}>
               <td className="px-6 py-4 whitespace-nowrap">
                 {editingUserId === user._id ? (
