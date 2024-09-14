@@ -2,11 +2,13 @@ import toast from "react-hot-toast";
 import { ShoppingCart } from "lucide-react";
 import { useUserStore } from "../stores/useUserStore";
 import { useCartStore } from "../stores/useCartStore";
-import { formatToThaiBaht } from "../lib/utils.js"; // นำเข้าฟังก์ชัน
+import { formatToThaiBaht } from "../lib/utils.js";
+import { useNavigate } from "react-router-dom"; // Import useNavigate for navigation
 
 const ProductCard = ({ product }) => {
   const { user } = useUserStore();
   const { addToCart } = useCartStore();
+  const navigate = useNavigate(); // Initialize useNavigate hook
 
   const handleAddToCart = () => {
     if (!user) {
@@ -15,6 +17,10 @@ const ProductCard = ({ product }) => {
     } else {
       addToCart(product);
     }
+  };
+
+  const handleViewDetails = () => {
+    navigate(`/product/${product.id}`); // Navigate to product detail page using product id
   };
 
   return (
@@ -39,16 +45,29 @@ const ProductCard = ({ product }) => {
             </span>
           </p>
         </div>
-        <button
-          className="flex items-center justify-center rounded-lg bg-emerald-600 px-5 py-2.5 text-center text-sm font-medium
-          text-white hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-300"
-          onClick={handleAddToCart}
-        >
-          <ShoppingCart size={22} className="mr-2" />
-          Add to cart
-        </button>
+        <div className="flex space-x-4">
+          {/* Detail Button */}
+          <button
+            className="flex items-center justify-center rounded-lg bg-emerald-600 px-5 py-2.5 text-center text-sm font-medium
+            text-white hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-300"
+            onClick={handleViewDetails} // Navigate to the product detail page
+          >
+            Detail
+          </button>
+
+          {/* Add to Cart Button */}
+          <button
+            className="flex items-center justify-center rounded-lg bg-emerald-600 px-5 py-2.5 text-center text-sm font-medium
+            text-white hover:bg-emerald-700 focus:outline-none focus:ring-4 focus:ring-emerald-300"
+            onClick={handleAddToCart}
+          >
+            <ShoppingCart size={22} className="mr-2" />
+            Add to cart
+          </button>
+        </div>
       </div>
     </div>
   );
 };
+
 export default ProductCard;
