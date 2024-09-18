@@ -5,7 +5,7 @@ import SignUpPage from "./pages/SignUpPage";
 import LoginPage from "./pages/LoginPage";
 import AdminPage from "./pages/AdminPage";
 import CategoryPage from "./pages/CategoryPage";
-import ProductDetail from "./pages/ProductDetail";  // Import ProductDetail
+ // Import ProductDetail
 import QRCheckout from "./pages/QRCheckout";
 import Navbar from "./components/Navbar";
 import { Toaster } from "react-hot-toast";
@@ -58,7 +58,7 @@ function App() {
 					<Route path='/purchase-cancel' element={user ? <PurchaseCancelPage /> : <Navigate to='/login' />} />
 					
 					{/* Add the ProductDetail Route */}
-					<Route path='/product/:id' element={<ProductDetail />} /> {/* ProductDetail route */}
+					
 					<Route path="/qr-checkout" element={<QRCheckout />} />
 				</Routes>
 			</div>
